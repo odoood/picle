@@ -183,7 +183,12 @@ proc picle::RefreshOutput {} {
 #       The pipeline commands joined together by pipe chars, as one string.
 
 proc picle::PipeCmd {} {
-    return [uplevel #0 {join [picle::ListDelEmpty [picle::TextVarList]] " | "}]
+    # Get the command list and prepend call to the : builtin to ensure the
+    # pipeline exec does not hang due to an initial cmd waiting for input
+
+    set cmdList [linsert [picle::ListDelEmpty [picle::TextVarList]] 0 ":"]
+
+    return [join $cmdList " | "]
 }
 
 # picle::ListDelEmpty --
